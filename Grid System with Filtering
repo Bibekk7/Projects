@@ -1,0 +1,85 @@
+//Here's an example implementation of the backend APIs for loading student details and implementing server-side filtering with python and flask framework:
+
+1) Load Student Details API:
+
+
+from flask import Flask, request, jsonify
+app = Flask(__name__)
+
+# Assuming the student details are stored in a list of dictionaries
+# Replace this with your actual data source
+students = [
+    {"id": 1, "name": "John Doe", "total_marks": 85},
+    {"id": 2, "name": "Jane Smith", "total_marks": 92},
+    # Add more student records here
+]
+
+@app.route('/students', methods=['GET'])
+def get_students():
+    page = int(request.args.get('page', 1))
+    page_size = int(request.args.get('page_size', 10))
+
+    start_index = (page - 1) * page_size
+    end_index = start_index + page_size
+
+    paginated_students = students[start_index:end_index]
+
+    return jsonify(paginated_students)
+
+if __name__ == '__main__':
+    app.run()
+    
+    
+    
+//In this example, the students endpoint accepts two optional query parameters: page and page_size. It retrieves the required students based on the page and page size, and returns the paginated results as JSON.//
+
+
+
+
+
+2) Server-side Filtering API:
+
+
+from flask import Flask, request, jsonify
+app = Flask(__name__)
+
+# Assuming the student details are stored in a list of dictionaries
+# Replace this with your actual data source
+students = [
+    {"id": 1, "name": "John Doe", "total_marks": 85},
+    {"id": 2, "name": "Jane Smith", "total_marks": 92},
+    # Add more student records here
+]
+
+@app.route('/students', methods=['GET'])
+def get_students():
+    page = int(request.args.get('page', 1))
+    page_size = int(request.args.get('page_size', 10))
+
+    start_index = (page - 1) * page_size
+    end_index = start_index + page_size
+
+    filtered_students = students
+
+    # Apply filters based on query parameters
+    filter_id = request.args.get('filter_id')
+    if filter_id:
+        filtered_students = [s for s in filtered_students if str(s['id']) == filter_id]
+
+    filter_name = request.args.get('filter_name')
+    if filter_name:
+        filtered_students = [s for s in filtered_students if filter_name.lower() in s['name'].lower()]
+
+    # Apply pagination
+    paginated_students = filtered_students[start_index:end_index]
+
+    return jsonify(paginated_students)
+
+if __name__ == '__main__':
+    app.run()
+    
+    
+  
+//In this example, the /students endpoint accepts additional query parameters for filtering, such as filter_id and filter_name. It applies the filters to the student list before performing pagination and returning the filtered and paginated results as JSON.//
+
+We can test these APIs using tools like curl or Postman by making GET requests to http://localhost:5000/students with  appropriate query parameters.
